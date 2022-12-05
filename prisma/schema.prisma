@@ -58,6 +58,18 @@ model Ticket {
   @@index([match_id, status])
 }
 
+model TickerTrx {
+  id         Int      @id @default(autoincrement())
+  type       String
+  opening    Int
+  quantity   Int
+  closing    Int
+  created_at DateTime @default(now())
+  created_by Int
+
+  @@index([created_by])
+}
+
 model Sale {
   id               Int     @id @default(autoincrement())
   source           String?
