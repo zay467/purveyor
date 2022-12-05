@@ -9,3 +9,79 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  password    String
+  role        Role     @default(GateKeeper)
+  gate        String?
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Match {
+  id             Int      @id @default(autoincrement())
+  team1          String
+  team1_img_url  String?
+  team2          String
+  team2_img_url  String?
+  match_datetime DateTime
+  stadium        String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  ticket         Ticket[]
+
+  @@index([stadium, match_datetime])
+}
+
+model TicketType {
+  id     Int      @id @default(autoincrement())
+  name   String
+  Ticket Ticket[]
+}
+
+model Ticket {
+  id              Int          @id @default(autoincrement())
+  match_id        Int
+  match           Match        @relation(fields: [match_id], references: [id])
+  ticket_type_id  Int
+  ticker_type     TicketType   @relation(fields: [ticket_type_id], references: [id])
+  price           Int
+  sold_quantity   Int          @default(0)
+  issued_quantity Int
+  status          TicketStatus @default(Active)
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  @@index([match_id, status])
+}
+
+model Sale {
+  id               Int     @id @default(autoincrement())
+  source           String?
+  ticket_code      String  @unique
+  name             String
+  phone            String  @unique
+  nrc              String  @unique
+  region           String
+  township         String
+  address          String
+  checkin          Boolean @default(false)
+  match_meta_data  Json
+  ticket_meta_data Json
+
+  @@index([ticket_code, checkin])
+}
+
+enum TicketStatus {
+  SoldOut
+  Active
+  Inactive
+}
+
+enum Role {
+  GateKeeper
+  ADMIN
+}
