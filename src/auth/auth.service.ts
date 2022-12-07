@@ -21,6 +21,6 @@ export class AuthService {
 
     if (!pwmatch) throw new ForbiddenException('Incorrect Password');
 
-    // return user;
+    return user;
   }
 }
