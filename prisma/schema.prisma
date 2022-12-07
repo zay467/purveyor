@@ -17,6 +17,7 @@ model User {
   role        Role     @default(GateKeeper)
   gate        String?
   description String?
+  is_active   Boolean  @default(false)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }
@@ -72,20 +73,27 @@ model TickerTrx {
 }
 
 model Sale {
-  id               Int     @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   source           String?
-  ticket_code      String  @unique
+  ticket_code      String        @unique
   name             String
-  phone            String  @unique
-  nrc              String  @unique
+  phone            String        @unique
+  nrc              String        @unique
   region           String
   township         String
   address          String
-  checkin          Boolean @default(false)
+  checkin          Boolean       @default(false)
+  payment_status   PaymentStatus @default(Pending)
   match_meta_data  Json
   ticket_meta_data Json
 
   @@index([ticket_code, checkin])
+}
+
+enum PaymentStatus {
+  Success
+  Fail
+  Pending
 }
 
 enum TicketStatus {
