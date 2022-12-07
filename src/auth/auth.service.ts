@@ -20,5 +20,7 @@ export class AuthService {
     const pwmatch = argon.verify(user.password, authDto.password);
 
     if (!pwmatch) throw new ForbiddenException('Incorrect Password');
+
+    return user;
   }
 }
